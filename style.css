@@ -82,6 +82,14 @@ button {
 }
 
 #equal, #clear {
+    flex: 2;
+}
+
+#clear {
+    font-size: 24px;
+}
+
+#backspace {
     flex: 1;
 }
 

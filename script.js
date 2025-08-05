@@ -109,12 +109,21 @@ operations.addEventListener("click", handleOperationInput);
 
 
 final.addEventListener("click", (e) => {
-    ongoing = false;
+    
     let action = e.target.textContent;
     if (action === "=") {
         input.textContent = operate(sequence[0], input.textContent, sequence[1]);
+        ongoing = false;
     }
     else if (action == "CLEAR") {
         clear();
+        ongoing = false;
+    }
+    else if (action == "\u232B") {
+        if (!input.classList.contains("remove")) {
+            if (input.textContent !== "") {
+                input.textContent = input.textContent.slice(0, input.textContent.length - 1)
+            }
+        }
     }
 })
