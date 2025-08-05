@@ -59,7 +59,7 @@ function handleOperationInput(e) {
     let text = input.textContent;
 
     //if one of the four operations is clicked
-    if (text.length > 0 && isOperation(currentOperation)) {
+    if (ongoing && text.length > 0 && isOperation(currentOperation)) {
         //deals with situation where user spams operation
         if (input.classList.contains("remove")) {
             sequence[sequence.length - 1] = currentOperation
