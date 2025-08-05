@@ -1,7 +1,7 @@
 // const math = require('mathjs');
 
 function operate(a, b, operation) {
-    return math.evaluate(`{a} {operation} {b}`);
+    return math.evaluate(`${a} ${operation} ${b}`);
 }
 
 const input = document.querySelector(".input");
@@ -9,27 +9,81 @@ const numbers = document.querySelector(".numbers");
 const operations = document.querySelector(".operations");
 const final = document.querySelector(".bottom");
 
-let numList = [];
-let opList = [];
+//use sequence to store nums + operation (convert that operation to evaluation of previous two nums after next operation)
+let sequence = [];
 let ongoing = false;
 
-function clear() {
-    numList = [];
-    opList = [];
-    ongoing = false;
+function clear(fullClear = true) {
+    if (fullClear) {
+        sequence = [];
+        ongoing = false;
+        input.classList.remove("remove");
+    }
+
     input.textContent = "";
 }
 
-numbers.addEventListener("click", (e) => {
-    if (!ongoing) {
-        clear();
-        ongoing = true;
+function isOperation(op) {
+    if (op == "\u2013" || op == "\u00D7" || op == "+" || op == "\u00F7") {
+        return true
     }
-    let num = e.target.textContent;
-    if (num == '.') {
+    return false;
+}
 
+// function getOperation(op) {
+//     if (op == "\u2013")
+//         return '-';
+//     if (op == "\u00D7")
+//         return '*';
+//     if (op == "+")
+//         return "+";
+//     if (op == "\u00F7") {
+//         return '/';
+//     }
+// }
+
+function handleOperationInput(e) {
+    let currentOperation = e.target.textContent;
+    let text = input.textContent;
+
+    //if one of the four operations is clicked
+    if (text.length > 0 && isOperation(currentOperation)) {
+        //deals with situation where user spams operation
+        if (input.classList.contains("remove")) {
+            sequence[sequence.length - 1] = currentOperation
+            return;
+        }
+        //this is a flag indicating that current input should be removed on next input / has been accounted for
+        input.classList.add("remove");
+
+        //if this isn't the first operation press
+        if (sequence.length !== 0) {
+            let previousResult = operate(sequence[0], text, sequence[1]);
+            console.log(previousResult)
+            input.textContent = previousResult;
+            sequence[0] = previousResult;
+            sequence[1] = currentOperation;
+        }
+        else {
+            sequence.push(text);
+            sequence.push(currentOperation);
+        }
     }
+}
+
+numbers.addEventListener("click", (e) => {
+    let num = e.target.textContent;
     if (Number.isInteger(Number(num))) {
+        if (input.classList.contains("remove")) {
+            clear(false);
+            input.classList.remove("remove");
+        }
+        if (ongoing == false) //after = is pressed and new inputs
+            ongoing = true;
+        
+        if (num == '.') {
+
+        }
         if (num === "0" && input.textContent.length == 0) {
             return;
         }
@@ -38,26 +92,8 @@ numbers.addEventListener("click", (e) => {
 
 })
 
-//this determines when accumulated/current are set; splits up things
-operations.addEventListener("click", (e) => {
-    let currentOperation = e.target.textContent;
-    let text = input.textContent;
-    //if one of the four operations is clicked
-    if (text.length > 0 && currentOperation.length == 1) {
-        numList.push(text);
-        //if this isn't the first operation press
-        if (numList.length !== 0) {
-            let index = (opList.length - 1) * 2;
-            let previousResult = operate(numList[index], numList[index + 1], opList.at(-1));
-            input.textContent = previousResult;
-            numList.push(previousResult);
-        }
-        //push after b/c do not need this yet
-        //if statement to deal w/ consecutive operation presses
-        opList.push(currentOperation);
-        current = text;
-    }
-})
+operations.addEventListener("click", handleOperationInput);
+
 
 final.addEventListener("click", (e) => {
     ongoing = false;
