@@ -1,7 +1,7 @@
 // const math = require('mathjs');
 
 function operate(a, b, operation) {
-    return math.evaluate(`${a} ${operation} ${b}`);
+    return math.evaluate(`${a} ${getOperation(operation)} ${b}`);
 }
 
 const input = document.querySelector(".input");
@@ -11,7 +11,19 @@ const final = document.querySelector(".bottom");
 
 //use sequence to store nums + operation (convert that operation to evaluation of previous two nums after next operation)
 let sequence = [];
-let ongoing = false;
+let ongoing = true;
+
+function getNormalDigits(num) {
+    return num.split().slice(0, num.indexOf('.'));
+}
+
+function getDecimalDigits(num) {
+    return num.split().slice(num.indexOf('.'));
+}
+
+function display(text) {
+    input.textContent = text;
+}
 
 function clear(fullClear = true) {
     if (fullClear) {
@@ -30,17 +42,17 @@ function isOperation(op) {
     return false;
 }
 
-// function getOperation(op) {
-//     if (op == "\u2013")
-//         return '-';
-//     if (op == "\u00D7")
-//         return '*';
-//     if (op == "+")
-//         return "+";
-//     if (op == "\u00F7") {
-//         return '/';
-//     }
-// }
+function getOperation(op) {
+    if (op == "\u2013")
+        return '-';
+    if (op == "\u00D7")
+        return '*';
+    if (op == "+")
+        return "+";
+    if (op == "\u00F7") {
+        return '/';
+    }
+}
 
 function handleOperationInput(e) {
     let currentOperation = e.target.textContent;
@@ -59,7 +71,6 @@ function handleOperationInput(e) {
         //if this isn't the first operation press
         if (sequence.length !== 0) {
             let previousResult = operate(sequence[0], text, sequence[1]);
-            console.log(previousResult)
             input.textContent = previousResult;
             sequence[0] = previousResult;
             sequence[1] = currentOperation;
@@ -78,8 +89,10 @@ numbers.addEventListener("click", (e) => {
             clear(false);
             input.classList.remove("remove");
         }
-        if (ongoing == false) //after = is pressed and new inputs
+        if (ongoing == false) {//after = is pressed and new inputs
+            clear();
             ongoing = true;
+        }
         
         if (num == '.') {
 
@@ -99,7 +112,7 @@ final.addEventListener("click", (e) => {
     ongoing = false;
     let action = e.target.textContent;
     if (action === "=") {
-        input.textContent = operate(accumulated, current, operation);
+        input.textContent = operate(sequence[0], input.textContent, sequence[1]);
     }
     else if (action == "CLEAR") {
         clear();
