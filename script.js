@@ -103,8 +103,9 @@ numbers.addEventListener("click", (e) => {
 
             }
         }
-        if (num === "0" && input.textContent.length == 0) {
-            return;
+
+        if (input.textContent == "0") {
+            input.textContent = "";
         }
         input.textContent += num;
     }
