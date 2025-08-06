@@ -16,6 +16,7 @@ button {
     border-radius: 8px;
     width: 48px;
     height: 48px;
+    box-shadow: -5px 5px 0 0px darkred;
 }
 
 #zero {
@@ -47,6 +48,8 @@ button {
     height: 356px;
     width: 296px;
     border-radius: 16px;
+    border: 1px black solid;
+    box-shadow: -5px 5px 1px 5px;
 }
 
 .numbers {
@@ -101,12 +104,14 @@ button {
     flex: 1;
 }
 
-.disabled {
-    
-}
-
 .hover {
     background-color: #ffabc4;
+    box-shadow: none;
+}
+
+.disabled {
+    background-color: darkred;
+    box-shadow: none;
 }
 
 /* plans:

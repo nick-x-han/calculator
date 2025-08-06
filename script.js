@@ -89,7 +89,9 @@ numbers.addEventListener("click", (e) => {
         }
         
         if (num == '.') {
-
+            if (!num.split.includes('.')) {
+                
+            }
         }
         if (num === "0" && input.textContent.length == 0) {
             return;
