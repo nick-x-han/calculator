@@ -21,9 +21,19 @@ function getDecimalDigits(num) {
     return num.split().slice(num.indexOf('.'));
 }
 
-function display(text) {
-    input.textContent = text;
-}
+// function disableNumbers() {
+
+// }
+
+// function display(text) {
+//     if (getDecimalDigits(text) >= 4) {
+//         text = Number(text).toFixed(4);
+//     }
+//     if (getNormalDigits(text) >= 6) {
+//         disableNumbers();
+//     }
+//     input.textContent = text;
+// }
 
 function clear(fullClear = true) {
     if (fullClear) {
@@ -90,7 +100,7 @@ numbers.addEventListener("click", (e) => {
         
         if (num == '.') {
             if (!num.split.includes('.')) {
-                
+
             }
         }
         if (num === "0" && input.textContent.length == 0) {
@@ -134,8 +144,11 @@ function changeHover(e, isHovering) {
     else {
         e.target.classList.remove("hover");
     }
+    input.classList.remove("hover");
 }
 
 const toAttach = [numbers, operations, final];
 toAttach.forEach(x => addEventListener("mouseover", e => changeHover(e, true)));
 toAttach.forEach(x => addEventListener("mouseout", e => changeHover(e, false)));
+input.removeEventListener("mouseover", e => changeHover(e, true));
+input.removeEventListener("mouseout", e => changeHover(e, false));
