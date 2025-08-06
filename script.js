@@ -36,22 +36,16 @@ function clear(fullClear = true) {
 }
 
 function isOperation(op) {
-    if (op == "\u2013" || op == "\u00D7" || op == "+" || op == "\u00F7") {
-        return true
-    }
+    if (op == "\u2013" || op == "\u00D7" || op == "+" || op == "\u00F7")  return true
+    
     return false;
 }
 
 function getOperation(op) {
-    if (op == "\u2013")
-        return '-';
-    if (op == "\u00D7")
-        return '*';
-    if (op == "+")
-        return "+";
-    if (op == "\u00F7") {
-        return '/';
-    }
+    if (op == "\u2013") return '-';
+    if (op == "\u00D7") return '*';
+    if (op == "+") return "+";
+    if (op == "\u00F7")  return '/';
 }
 
 function handleOperationInput(e) {
@@ -127,3 +121,19 @@ final.addEventListener("click", (e) => {
         }
     }
 })
+
+//hovering
+function changeHover(e, isHovering) {
+    const text = e.target.textContent
+    if (!(text.length === 1 || text === "CLEAR")) return
+    if (isHovering) {
+        e.target.classList.add("hover");
+    }
+    else {
+        e.target.classList.remove("hover");
+    }
+}
+
+const toAttach = [numbers, operations, final];
+toAttach.forEach(x => addEventListener("mouseover", e => changeHover(e, true)));
+toAttach.forEach(x => addEventListener("mouseout", e => changeHover(e, false)));
