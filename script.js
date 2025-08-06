@@ -1,6 +1,11 @@
 // const math = require('mathjs');
 
 function operate(a, b, operation) {
+    if (getOperation(operation) == "/" && (a == '0' || b == '0')) {
+        alert("Don't do that.");
+        clear();
+        return;
+    }
     return math.evaluate(`${a} ${getOperation(operation)} ${b}`);
 }
 
@@ -8,6 +13,7 @@ const input = document.querySelector(".input");
 const numbers = document.querySelector(".numbers");
 const operations = document.querySelector(".operations");
 const final = document.querySelector(".bottom");
+const container = document.querySelector(".container");
 
 //use sequence to store nums + operation (convert that operation to evaluation of previous two nums after next operation)
 let sequence = [];
@@ -43,11 +49,12 @@ function clear(fullClear = true) {
     }
 
     input.textContent = "";
+    dot.classList.remove("disabled");
 }
 
 function isOperation(op) {
-    if (op == "\u2013" || op == "\u00D7" || op == "+" || op == "\u00F7")  return true
-    
+    if (op == "\u2013" || op == "\u00D7" || op == "+" || op == "\u00F7") return true
+
     return false;
 }
 
@@ -55,13 +62,13 @@ function getOperation(op) {
     if (op == "\u2013") return '-';
     if (op == "\u00D7") return '*';
     if (op == "+") return "+";
-    if (op == "\u00F7")  return '/';
+    if (op == "\u00F7") return '/';
 }
 
 function handleOperationInput(e) {
     let currentOperation = e.target.textContent;
     let text = input.textContent;
-
+    dot.classList.remove("disabled");
     //if one of the four operations is clicked
     if (ongoing && text.length > 0 && isOperation(currentOperation)) {
         //deals with situation where user spams operation
@@ -86,22 +93,25 @@ function handleOperationInput(e) {
     }
 }
 
-numbers.addEventListener("click", (e) => {
+const dot = document.querySelector("#dot");
+
+function handleNumberInput(e) {
     let num = e.target.textContent;
-    if (Number.isInteger(Number(num))) {
+    if (Number.isInteger(Number(num)) || num == ".") {
         if (input.classList.contains("remove")) {
             clear(false);
             input.classList.remove("remove");
+
         }
         if (ongoing == false) {//after = is pressed and new inputs
             clear();
             ongoing = true;
         }
-        
         if (num == '.') {
-            if (!num.split.includes('.')) {
-
-            }
+            if (!dot.classList.contains("disabled"))
+                dot.classList.add("disabled");
+            else
+                return;
         }
 
         if (input.textContent == "0") {
@@ -109,14 +119,14 @@ numbers.addEventListener("click", (e) => {
         }
         input.textContent += num;
     }
-
-})
+}
+numbers.addEventListener("click", e => handleNumberInput(e));
 
 operations.addEventListener("click", handleOperationInput);
 
 
 final.addEventListener("click", (e) => {
-    
+
     let action = e.target.textContent;
     if (action === "=") {
         input.textContent = operate(sequence[0], input.textContent, sequence[1]);
@@ -147,6 +157,18 @@ function changeHover(e, isHovering) {
     }
     input.classList.remove("hover");
 }
+
+document.addEventListener("keydown", (e) => {
+    const buttons = container.querySelectorAll("button");
+    const pressedButton = Array.from(buttons).find(
+        button => button.textContent === e.key
+    );
+    
+    if (pressedButton) {
+        pressedButton.click();
+        e.preventDefault(); // Avoid unintended page scrolling
+    }
+});
 
 const toAttach = [numbers, operations, final];
 toAttach.forEach(x => addEventListener("mouseover", e => changeHover(e, true)));
